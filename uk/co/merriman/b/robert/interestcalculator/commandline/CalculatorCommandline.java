@@ -31,7 +31,11 @@ public class CalculatorCommandline {
         printOutputValues(values);
     }
 
-
+    /**
+     * Gathers all the input values needed by asking the user
+     *
+     * @return InterestValues wrapper to all required numbers
+     */
     private InterestValues gatherInputValues() {
         String doubleError =  "Please enter a valid decimal number."; // Reused error text
         Scanner input = new Scanner(System.in); // Instantiate Scanner to use System.in for user input
@@ -48,6 +52,11 @@ public class CalculatorCommandline {
 
     }
 
+    /**
+     * Prints the output values
+     *
+     * @param values InterestValues wrapper for all calculated interest values
+     */
     private void printOutputValues(InterestValues values) {
         print(""); // Spacer
 
@@ -64,6 +73,7 @@ public class CalculatorCommandline {
         String formattedTotal = formatGbpWithPrecision(values.getTotalLoanPayment());
         print("Total loan cost: " + formattedTotal);
     }
+
 
     /**
      * Alias for System.out.println()

@@ -1,6 +1,7 @@
 package uk.co.merriman.b.robert.interestcalculator.commandline;
 
 import uk.co.merriman.b.robert.interestcalculator.logic.InterestCalculator;
+import uk.co.merriman.b.robert.interestcalculator.logic.InterestValues;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -9,8 +10,7 @@ import java.util.Scanner;
 /**
  * Created by robert.merriman on 16/02/2017.
  */
-public class CalculatorCommandline
-{
+public class CalculatorCommandline {
 
     public static void main(String[] args) {
         new CalculatorCommandline(); // Calls the constructor to start execution
@@ -20,30 +20,49 @@ public class CalculatorCommandline
      * Starts the commandline calculator interface
      */
     public CalculatorCommandline() {
-        String doubleError =  "Please enter a valid decimal number."; // Reused error text
-
-        InterestCalculator calculator = new InterestCalculator();
-        Scanner input = new Scanner(System.in); // Instantiate Scanner to use System.in for user input
-
 
         print("Interest Calculator\n");
 
+        InterestValues values = gatherInputValues();
+        InterestCalculator calculator = new InterestCalculator();
+
+        values = calculator.calculate(values);
+
+        printOutputValues(values);
+    }
+
+
+    private InterestValues gatherInputValues() {
+        String doubleError =  "Please enter a valid decimal number."; // Reused error text
+        Scanner input = new Scanner(System.in); // Instantiate Scanner to use System.in for user input
+
         // Get all values needed from the user
         double loanAmount = getInputToDouble(input, "Enter the loan amount (£):", doubleError);
-        print(formatGbpWithPrecision(loanAmount));
-        double interestRate = getInputToDouble(input, "Enter the interest rate on your loan (%):", doubleError);
-        print(interestRate + "%");
+        print(formatGbpWithPrecision(loanAmount) + "\n");
+        double interestRate = getInputToDouble(input, "Enter the monthly interest rate on your loan (%):", doubleError);
+        print(interestRate + "%\n");
         double monthsBorrowed = getInputToDouble(input, "Enter the duration of the loan (months):", doubleError);
-        print(monthsBorrowed + " months");
+        print(monthsBorrowed + " months\n");
 
-        // Calculate total
-        double total = calculator.calculateInterest(loanAmount, interestRate, monthsBorrowed);
+        return new InterestValues(loanAmount, interestRate, monthsBorrowed);
 
-        // TODO stop using total and show per month
+    }
 
-        // Format the total to GBP with more precision than to the nearest penny and print to the screen
-        String formattedTotal = formatGbpWithPrecision(total);
-        print("\nYour total loan cost is: " + formattedTotal);
+    private void printOutputValues(InterestValues values) {
+        print(""); // Spacer
+
+        // Format values to GBP with more precision than to the nearest penny and print to the screen
+        String formattedPerPeriod = formatGbpWithPrecision(values.getInterestPerPeriod());
+        print("Interest per month: " + formattedPerPeriod);
+
+        String formattedAddedInterest = formatGbpWithPrecision(values.getTotalAddedInterest());
+        print("Total added interest to pay: " + formattedAddedInterest);
+
+        String formattedPaymentPerPeriod = formatGbpWithPrecision(values.getPaymentPerPeriod());
+        print("Monthly payment: " + formattedPaymentPerPeriod);
+
+        String formattedTotal = formatGbpWithPrecision(values.getTotalLoanPayment());
+        print("Total loan cost: " + formattedTotal);
     }
 
     /**

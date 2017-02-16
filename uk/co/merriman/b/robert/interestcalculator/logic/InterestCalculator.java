@@ -4,18 +4,22 @@ package uk.co.merriman.b.robert.interestcalculator.logic;
  *
  * Created by robert.merriman on 14/02/2017.
  */
-public class InterestCalculator
-{
+public class InterestCalculator {
+
     /**
-     * Calculates the total interest from the given parameters
+     * Calculates the interest per period, total added interest and the total loan to pay back
+     * from the input values in the Interest values class.
      *
-     * @param loanAmount Original loan amount
-     * @param interestRate Rate of interest, usually monthly or yearly
-     * @param timeBorrowed Time the loan with last until it is paid off
-     * @return The calculated total
+     * @param values Container for input values and where the output values are appended
+     * @return Class containing the original input and the newly calculated outputs
      */
-    public double calculateInterest(double loanAmount, double interestRate, double timeBorrowed) {
-        return loanAmount + loanAmount * interestRate * timeBorrowed;
+    public InterestValues calculate(InterestValues values) {
+        values.setInterestPerPeriod(values.getLoanAmount() * (values.getInterestRate() / 100));
+        values.setPaymentPerPeriod(values.getInterestPerPeriod() + values.getLoanAmount() / values.getTimeBorrowed());
+        values.setTotalAddedInterest(values.getInterestPerPeriod() * values.getTimeBorrowed());
+        values.setTotalLoanPayment(values.getTotalAddedInterest() + values.getLoanAmount());
+
+        return values;
     }
 
 }
